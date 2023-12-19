@@ -1,5 +1,7 @@
 package day7;
 
+import java.util.Objects;
+
 public class Card implements Comparable<Card> {
 
 	private CardValue value;
@@ -29,4 +31,22 @@ public class Card implements Comparable<Card> {
 	public String toString() {
 		return this.value.toString();
 	}
+	
+	@Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        Card otherCard = (Card) obj;
+        return value == otherCard.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
 }
