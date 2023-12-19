@@ -1,6 +1,5 @@
 package day7;
 
-import java.util.Collection;
 import java.util.HashMap;
 
 public enum HandType {
@@ -44,7 +43,7 @@ public enum HandType {
 			return FIVE_OF_A_KIND;
 		} else if(nbCardsOfAKind.size() == 2) {
 			//Four of a kind or Full house
-			Integer[] coll = (Integer[]) nbCardsOfAKind.values().toArray();
+			Integer[] coll = nbCardsOfAKind.values().toArray(new Integer[0]);
 			if((coll[0] == 4 && coll[1] == 1) || (coll[0] == 1 && coll[1] == 4)) {
 				//Four of a kind
 				return FOUR_OF_A_KIND;
@@ -56,7 +55,7 @@ public enum HandType {
 			}
 		} else if(nbCardsOfAKind.size() == 3) {
 			//Three of a kind or 2 Pair
-			Integer[] coll = (Integer[]) nbCardsOfAKind.values().toArray();
+			Integer[] coll = nbCardsOfAKind.values().toArray(new Integer[0]);
 			if((coll[0] == 3 && coll[1] == 1 && coll[2] == 1) || (coll[0] == 1 && coll[1] == 3 && coll[2] == 1) || (coll[0] == 1 && coll[1] == 1 && coll[2] == 3)) {
 				//Three of a kind
 				return THREE_OF_A_KIND;

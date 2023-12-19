@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 public class MainDay7 {
-	public static boolean isDebug = true;
+	public static boolean isDebug = false;
 	
 	public static LinkedList<Bid> listHandsAndBids;
 	
@@ -75,8 +75,6 @@ public class MainDay7 {
 		
 		//Ordonner par rang
 		listBidsRanked = new ArrayList<Bid>();
-		
-		int indexRank = 1;
 
 		//parcourir les mains à ajouter
 		for(Bid bid : listHandsAndBids) {
