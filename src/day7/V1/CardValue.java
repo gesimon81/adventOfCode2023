@@ -1,4 +1,4 @@
-package day7;
+package day7.V1;
 
 public enum CardValue {
 	A(14),
