@@ -1,4 +1,4 @@
-package day7;
+package day7.V1;
 
 public class InputDay7 {
 	public static final String INPUT_DAY7_TEST = 

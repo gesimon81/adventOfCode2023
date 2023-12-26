@@ -1,4 +1,4 @@
-package day7;
+package day7.V1;
 
 import java.util.ArrayList;
 import java.util.Collections;

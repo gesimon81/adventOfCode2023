@@ -1,4 +1,4 @@
-package day7;
+package day7V2;
 
 import java.util.Objects;
 
@@ -24,7 +24,11 @@ public class Card implements Comparable<Card> {
 
         if (this.value.getValue() > card2.getValue().getValue()) return 1;
 
-        return -1; 
+        if (this.value.getValue() < card2.getValue().getValue()) return -1;
+        
+		System.out.println("!!!!!!!!!!!!!! CARD Comparaison impossible !!!!!!!!!!!!!!!");
+
+        return -2; 
 	}
 	
 	@Override
