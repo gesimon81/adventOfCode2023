@@ -46,4 +46,8 @@ public class Pipe {
 		return type;
 	}
 	
+	public String toString() {
+		return "{" + coordinate.toString() + " = " + PipeType.getStringByPipeType(type) + "}";
+	}
+	
 }

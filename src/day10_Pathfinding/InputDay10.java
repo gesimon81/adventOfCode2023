@@ -9,11 +9,11 @@ public class InputDay10 {
 			+ ".....";
 	
 	public static final String INPUT_DAY10_TEST2 = 
-			  "..F7.\r\n"
-			+ ".FJ|.\r\n"
-			+ "SJ.L7\r\n"
-			+ "|F--J\r\n"
-			+ "LJ...";
+			  "7-F7-\r\n"
+			  + ".FJ|7\r\n"
+			  + "SJLL7\r\n"
+			  + "|F--J\r\n"
+			  + "LJ.LJ";
 	
 	public static final String INPUT_DAY10 =
 			    "7-J-..FF.FLJJ7-7-L|7FFF7F7FF..|7-77.F77L---|7L-77-FF.LF-J77F-7L7L7|--.F-|.FFFF-|7-|.F--|FF.F.F77-L7-|7FF.FJ7FLL7-J7-|7|-L7-|7.7FF|-7-F.7777|\r\n"

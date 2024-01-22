@@ -1,15 +1,16 @@
 package day10_Pathfinding;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class MainDay10 {
 
-	public static boolean isDebug = true;
+	public static boolean isDebug = false;
 	
-	public static String inputTest = InputDay10.INPUT_DAY10_TEST1;
-	//public static String inputTest = InputDay10.INPUT_DAY10_TEST2;
+	//public static String inputTest = InputDay10.INPUT_DAY10_TEST1;
+	public static String inputTest = InputDay10.INPUT_DAY10_TEST2;
 	
 	/**
 	 * Garde en mémoire l'ensemble des tuyaux et de leurs coordonnées
@@ -79,6 +80,7 @@ public class MainDay10 {
 	 */
 	private static void associatePipesWithNextPipes() {
 		Pipe pipeNext;
+		@SuppressWarnings("unused")
 		Pipe currentPipe; //pour debug
 		
     	for(Map.Entry<Coordinate, Pipe> pipeEntry : mapAllPipes.entrySet()) {
@@ -131,7 +133,7 @@ public class MainDay10 {
 	    	    			pipeNext = mapAllPipes.get(new Coordinate(pipeEntry.getKey().getCoordX(), pipeEntry.getKey().getCoordY()  + 1));
 	    	    		
 	    	    			//Si pipeNext != -, J, 7 alors null
-	    	    			if(pipeNext.getType().equals(PipeType.VERTICAL_PIPE) || pipeNext.getType().equals(PipeType.BEND90_NW) || pipeNext.getType().equals(PipeType.BEND90_SW)) {
+	    	    			if(pipeNext.getType().equals(PipeType.HORIZONTAL_PIPE) || pipeNext.getType().equals(PipeType.BEND90_NW) || pipeNext.getType().equals(PipeType.BEND90_SW)) {
 	    	    				pipeEntry.getValue().setSecondPipe(pipeNext);
 	    	    			} else {
 	    	    				pipeEntry.getValue().setSecondPipe(null);
@@ -233,7 +235,7 @@ public class MainDay10 {
 	    	    			pipeNext = mapAllPipes.get(new Coordinate(pipeEntry.getKey().getCoordX(), pipeEntry.getKey().getCoordY()  + 1));
 	    	    		
 	    	    			//Si pipeNext != -, J, 7 alors null
-	    	    			if(pipeNext.getType().equals(PipeType.VERTICAL_PIPE) || pipeNext.getType().equals(PipeType.BEND90_NW) || pipeNext.getType().equals(PipeType.BEND90_SW)) {
+	    	    			if(pipeNext.getType().equals(PipeType.HORIZONTAL_PIPE) || pipeNext.getType().equals(PipeType.BEND90_NW) || pipeNext.getType().equals(PipeType.BEND90_SW)) {
 	    	    				pipeEntry.getValue().setSecondPipe(pipeNext);
 	    	    			} else {
 	    	    				pipeEntry.getValue().setSecondPipe(null);
@@ -246,6 +248,7 @@ public class MainDay10 {
 	    	 			
 	    	 			break;
         		}
+        		
     		}
     		
     	}
@@ -441,6 +444,32 @@ public class MainDay10 {
 		}
 	}
 	
+	/**
+	 * Représentation du schéma
+	 */
+	public static void toStringSchemaDistance(HashMap<Coordinate, Integer> mapDistances) {
+		System.out.println("Schéma complet avec distances :");
+		String str;
+		
+		int distanceToDisplay;
+		
+		for(int indexLine = 0; indexLine < sizeSchemaX; indexLine++) {
+			str = "";
+			for(int indexColumn = 0; indexColumn < sizeSchemaY; indexColumn++) {
+				if(mapDistances.containsKey(new Coordinate(indexLine, indexColumn))) {
+					distanceToDisplay = mapDistances.get(new Coordinate(indexLine, indexColumn));
+					
+					str += distanceToDisplay;	
+				} else {
+					str += ".";	
+				}
+				
+			}
+			
+			System.out.println(str);
+		}
+	}
+	
 	
 	/**
 	 * Générer le schéma en supprimant tous les éléments n'appartenant pas à la boucle principale
@@ -455,7 +484,6 @@ public class MainDay10 {
 		
 		Coordinate coordNext = startingPipe.getFirstPipe().getCoordinate();
 		Coordinate coordEnd = startingPipe.getSecondPipe().getCoordinate();
-		//Coordinate coordEnd = startingPipe.getCoordinate();
 		Pipe currentPipe = null;
 	
 		
@@ -463,7 +491,7 @@ public class MainDay10 {
 			currentPipe = mapAllPipes.get(coordNext);
 			
 			if(currentPipe.getFirstPipe() == null || currentPipe.getSecondPipe() == null)
-				throw new Exception("Erreur main loop avec un pipe à un sens");
+				throw new Exception("Erreur main loop avec un pipe à un sens : " + currentPipe.getCoordinate());
 			
 			//Explorer le premier pipe
 			if(!mainLoop.containsKey(currentPipe.getFirstPipe().getCoordinate())) {
@@ -493,6 +521,137 @@ public class MainDay10 {
 	}
 	
 	
+	public static int findFartestTileV1() throws Exception {
+		//Circuit principal traversé par l'animal
+		HashMap<Coordinate, Pipe> mainLoop = generateMainLoop();
+		
+		
+		
+		//Contient la distance nécessaire pour chaque pipe par rapport au départ
+		HashMap<Coordinate, Integer> nbStepsByPipe = new HashMap<Coordinate, Integer>();
+		
+		
+		int currentDistance = 0;
+		
+		
+		// premier sens
+		Coordinate coordNext = startingPipe.getFirstPipe().getCoordinate();
+		Coordinate coordEnd = startingPipe.getSecondPipe().getCoordinate();
+
+		//Les emplacements déjà marqués
+		ArrayList<Coordinate> listCoordinatesChecked = new ArrayList<Coordinate>();
+		
+		Pipe currentPipe = null;
+	
+		nbStepsByPipe.put(startingPipe.getCoordinate(), 0);
+		listCoordinatesChecked.add(startingPipe.getCoordinate());
+		
+		while(!coordNext.equals(coordEnd)) {
+			currentPipe = mainLoop.get(coordNext);
+			currentDistance++; 
+			
+			if(currentPipe.getFirstPipe() == null || currentPipe.getSecondPipe() == null)
+				throw new Exception("Erreur main loop avec un pipe à un sens");
+			
+			//Explorer le premier pipe
+			if(!listCoordinatesChecked.contains(currentPipe.getFirstPipe().getCoordinate())) {
+				coordNext = currentPipe.getFirstPipe().getCoordinate();
+			}
+			
+			//Explorer le second pipe
+			if(!listCoordinatesChecked.contains(currentPipe.getSecondPipe().getCoordinate())) {
+				coordNext = currentPipe.getSecondPipe().getCoordinate();			
+			}
+			
+			//Ajouter la nouvelle distance
+			listCoordinatesChecked.add(currentPipe.getCoordinate());
+			
+			if(nbStepsByPipe.containsKey(currentPipe.getCoordinate())) {
+				//On veut garder la valeur minimale
+				if(nbStepsByPipe.get(currentPipe.getCoordinate()) > currentDistance) {
+					nbStepsByPipe.put(currentPipe.getCoordinate(), currentDistance);
+				}
+			} else {
+				nbStepsByPipe.put(currentPipe.getCoordinate(), currentDistance);
+			}
+		}
+		
+		//Ajouter le dernier élément parcouru	
+		if(nbStepsByPipe.containsKey(startingPipe.getSecondPipe().getCoordinate())) {
+			//On veut garder la valeur minimale
+			if(nbStepsByPipe.get(startingPipe.getSecondPipe().getCoordinate()) > currentDistance) {
+				nbStepsByPipe.put(startingPipe.getSecondPipe().getCoordinate(), currentDistance);
+			}
+		} else {
+			nbStepsByPipe.put(startingPipe.getSecondPipe().getCoordinate(), currentDistance);
+		}
+				
+				
+		toStringSchemaDistance(nbStepsByPipe);
+		
+		
+		// second sens
+		coordNext = startingPipe.getSecondPipe().getCoordinate();
+		coordEnd = startingPipe.getFirstPipe().getCoordinate();
+
+		//Les emplacements déjà marqués
+		listCoordinatesChecked.clear();
+		
+		currentPipe = null;
+		currentDistance = 0;
+	
+		listCoordinatesChecked.add(startingPipe.getCoordinate());
+		
+		while(!coordNext.equals(coordEnd)) {
+			currentPipe = mainLoop.get(coordNext);
+			currentDistance++; 
+			
+			if(currentPipe.getFirstPipe() == null || currentPipe.getSecondPipe() == null)
+				throw new Exception("Erreur main loop avec un pipe à un sens");
+			
+			//Explorer le premier pipe
+			if(!listCoordinatesChecked.contains(currentPipe.getFirstPipe().getCoordinate())) {
+				coordNext = currentPipe.getFirstPipe().getCoordinate();
+			}
+			
+			//Explorer le second pipe
+			if(!listCoordinatesChecked.contains(currentPipe.getSecondPipe().getCoordinate())) {
+				coordNext = currentPipe.getSecondPipe().getCoordinate();			
+			}
+			
+			//Ajouter la nouvelle distance
+			listCoordinatesChecked.add(currentPipe.getCoordinate());
+			
+			if(nbStepsByPipe.containsKey(currentPipe.getCoordinate()) && nbStepsByPipe.get(currentPipe.getCoordinate()) > currentDistance) {
+				nbStepsByPipe.put(currentPipe.getCoordinate(), currentDistance);
+			}
+		}
+		
+		//Ajouter le dernier élément parcouru	
+		if(nbStepsByPipe.containsKey(startingPipe.getFirstPipe().getCoordinate())) {
+			//On veut garder la valeur minimale
+			if(nbStepsByPipe.get(startingPipe.getFirstPipe().getCoordinate()) > currentDistance) {
+				nbStepsByPipe.put(startingPipe.getFirstPipe().getCoordinate(), currentDistance);
+			}
+		} else {
+			nbStepsByPipe.put(startingPipe.getFirstPipe().getCoordinate(), currentDistance);
+		}
+		
+		toStringSchemaDistance(nbStepsByPipe);
+		
+		
+		//Récupérer la distance maximale
+		//Ne pouvais pas être fait avant avec le système à deux sens
+		int maxDistance = Integer.MIN_VALUE;
+		
+		for(Map.Entry<Coordinate, Integer> coordinateEntry : nbStepsByPipe.entrySet()) {
+			if(maxDistance < coordinateEntry.getValue())
+				maxDistance = coordinateEntry.getValue();
+		}
+		
+		return maxDistance;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		convertInput();
 		
@@ -502,6 +661,7 @@ public class MainDay10 {
 			System.out.println("All pipes " + pipeEntry.getKey() + " = " + PipeType.getStringByPipeType(pipeEntry.getValue().getType()));
 		}
 		
-		generateMainLoop();
+		int resultV1 = findFartestTileV1();
+		System.out.println("Result final V1 = " + resultV1);
 	} 
 }
